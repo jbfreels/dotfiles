@@ -1,0 +1,200 @@
+# i3 config file (v4)
+#
+# Please see https://i3wm.org/docs/userguide.html for a complete reference!
+#
+#
+#  REQUIRES: feh, ranger, volumeicon, scrot, rofi, imagemagick
+#
+
+set $ws1 1:term
+set $ws2 2:google
+set $ws3 3
+set $ws4 4
+set $ws5 5
+set $ws6 6
+set $ws7 7
+set $ws8 8
+set $ws9 9
+
+new_window pixel 0
+new_float normal
+
+set $mod Mod4
+font pango:Inconsolata 8
+
+floating_modifier $mod
+
+for_window [class="^.*"] border pixel 3
+for_window [class="Pavucontrol" instance="pavucontrol"] floating enable
+for_window [class="Remmina"] floating enable
+for_window [window_role="pop-up"] floating enable
+
+assign [class="Google-chrome"] $ws2
+
+bindsym $mod+Return exec urxvt
+bindsym $mod+Shift+q kill
+bindsym $mod+space exec --no-startup-id rofi -show run
+# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+g exec google-chrome-stable
+bindsym $mod+b workspace back_and_forth
+
+for_window [class="remmina"] floating enable
+
+#
+#  MODIFY FOCUS
+#
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+#
+#  MOVE FOCUS
+#
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+#
+#  CONTAINER
+#
+
+bindsym $mod+h split h;exec notify-send "tiling horizontally"
+bindsym $mod+v split v;exec notify-send "tiling vertically"
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+Shift+space floating toggle
+#bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
+#bindsym $mod+d focus child
+
+#
+#  DEFINE WORKSPACES
+#
+
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+
+#
+#  i3
+#
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart; polybar -msg cmd restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+#
+#  MOVE CONTAINER
+#
+bindsym $mod+m mode "move" focus floating
+mode "move" {
+	bindsym $mod+Tab focus right
+
+	bindsym Left 	move left
+	bindsym	Down 	move down
+	bindsym Up   	move up
+ 	bindsym Right	move right
+
+	bindsym h	move left
+	bindsym j	move down
+	bindsym k	move up
+	bindsym l	move right
+
+	bindsym Return	mode "default"
+	bindsym Escape 	mode "default"
+	bindsym $mod+r	mode "default"
+}
+
+#
+#  RESIZE CONTAINER
+#
+bindsym $mod+r mode "resize"
+mode "resize" {
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym semicolon resize grow width 10 px or 10 ppt
+
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+
+#
+#  SCREENSHOT
+#
+bindsym --release Print exec scrot $HOME/Pictures/screen-%Y%m%d-%H%M%S.png
+bindsym --release Shift+Print exec scrot /tmp/scrot.png && xclip -selection c -t image/png /tmp/scrot.png && rm /tmp/scrot.png
+bindsym --release $mod+Print exec scrot -s /tmp/scrot.png && xclip -selection c -t image/png /tmp/scrot.png && rm /tmp/scrot.png
+
+#
+#  PULSE AUDIO CONTROLS
+#
+bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -q sset Master 5%+
+bindsym XF86AudioLowerVolume exec --no-startup-id amixer -q sset Master 5%-
+bindsym XF86AudioMute exec --no-startup-id amixer -q sset Master toggle;
+bindsym XF86Tools exec --no-startup-id notify-send 'correct button'
+
+#
+#  BACKGROUND
+#
+exec_always --no-startup-id feh --bg-fill ~/wallpaper.png
+
+#
+#  i3GAPS
+gaps inner 5
+gaps outer 10
+
+#
+#  FLOATING TERM
+#
+bindsym $mod+Shift+v exec --no-startup-id urxvt -name "floating_urxvt"
+for_window [class="URxvt" instance="floating_urxvt$"] floating toggle
+
+#
+#  LAUNCH ON STARTUP
+#
+exec --no-startup-id killall polybar; polybar top &
+exec --no-startup-id xrandr --output DVI-I-1 --right-of HDMI-0
+exec --no-startup-id dunst
+exec --no-startup-id compton -b &
+
+#
+#  LOCK SCREEN
+#
+bindsym $mod+Control+l exec --no-startup-id i3lock_blank
+
